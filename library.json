@@ -1,0 +1,22 @@
+{
+  "name": "esp32WS2811oWiFi",
+  "version": "0.1.0",
+  "keywords": "Arduino, esp32, WS2811, WS2812, RMT",
+  "description": "Arduino library for ESP32 to drive WS2811 LEDs using the RMT peripheral",
+  "homepage": "https://github.com/bertmelis/esp32WS2811",
+  "license": "MIT",
+  "authors": {
+    "name": "Bert Melis",
+    "url": "https://github.com/bertmelis",
+    "maintainer": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bertmelis/esp32WS2811.git",
+    "branch": "master"
+  },
+  "frameworks": "arduino",
+  "platforms": [
+    "espressif32"
+  ]
+}
