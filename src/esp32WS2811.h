@@ -77,7 +77,7 @@ class WS2811 {
    * @param numLeds number of leds on the string, starting zero
    * @param channel RMT channel to use, defaults to channel 0
    */
-  explicit WS2811(int dataPin, size_t numLeds, int channel=RMT_CHANNEL_0);
+  explicit WS2811(int dataPin, size_t numLeds, int channel = RMT_CHANNEL_0);
 
   virtual ~WS2811();
 
@@ -96,7 +96,7 @@ class WS2811 {
    * the RMT driver without errors.
    */
   void show();
-  
+
   /**
    * @brief Set the colour of an individual led.
    * 

@@ -41,7 +41,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 class BlinkLed : public WS2811Effect {
  public:
-
   /**
    * @brief Creates the effect instance
    * 
