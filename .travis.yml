@@ -1,0 +1,24 @@
+language: python
+python:
+    - "2.7"
+
+sudo: required
+cache:
+    directories:
+        - "~/.platformio"
+
+env:
+    - PLATFORMIO_CI_SRC=examples/allEffects/allEffects.ino
+    - CPPLINT=true
+
+install:
+    - pip install -U platformio
+    - pip install -U cpplint
+
+script:
+    - if [[ "$CPPLINT" ]]; then cpplint --repository=. --recursive --linelength=200 --filter=-build/include  ./src; else platformio ci --lib="." --board=lolin32; fi
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
