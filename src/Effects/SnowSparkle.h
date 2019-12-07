@@ -1,8 +1,5 @@
 /*
 
-Copyright 2015 
-https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
-
 Copyright 2019 Bert Melis
 
 Permission is hereby granted, free of charge, to any person obtaining a
@@ -26,39 +23,39 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /**
- * @file Effect.h
- * @brief Effect base class definitions
+ * @file SnowSparkle.h
+ * @brief Snow sparkle effect definitions
  */
 
 #pragma once
 
 #include <stddef.h>
 #include <Arduino.h>  // delay, random...
-#include "../esp32WS2811.h"
-
-class WS2811;
+#include "Effect.h"
+#include "Colour.h"
 
 /**
- * @brief Pure virtual base class to built effects. 
+ * @brief Dim undertone with sparkles.
  * 
- * Effects have to be (publicly) inherit from this class.
  */
-class WS2811Effect {
+class SnowSparkle : public WS2811Effect {
  public:
-  virtual ~WS2811Effect() {}
+  /**
+   * @brief Creates the effect instance
+   */
+  explicit SnowSparkle(Colour baseColour, size_t maxNoSparkles, uint32_t minDelay, uint32_t maxDelay);
 
   /**
-   * @brief Run the effect.
+   * @brief Method which will be called by WS2811. See Effect - run.
    * 
-   * @param[in] strip Pointer to the WS2811 instance (led strip) on which this effect will run.
-   * @param[in] numLeds Number of leds for the WS2811 instance.
+   * @param strip Pointer to the WS2811 instance (led strip) on which this effect will run.
+   * @param numLeds Number of leds for the WS2811 instance.
    */
-  virtual void run(WS2811* strip, size_t numLeds) = 0;
-};
+  void run(WS2811* ws2811, size_t numLeds);
 
-#include "TwinkleRandom.h"
-#include "RandomColours.h"
-#include "FadeColours.h"
-#include "LarsonScanner.h"
-#include "BlinkLed.h"
-#include "SnowSparkle.h"
+ private:
+  Colour _baseColour;
+  size_t _maxNoSparkles;
+  uint32_t _minDelay;
+  uint32_t _maxDelay;
+};

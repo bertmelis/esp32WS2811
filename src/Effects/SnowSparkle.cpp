@@ -1,8 +1,5 @@
 /*
 
-Copyright 2015 
-https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/
-
 Copyright 2019 Bert Melis
 
 Permission is hereby granted, free of charge, to any person obtaining a
@@ -25,40 +22,23 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-/**
- * @file Effect.h
- * @brief Effect base class definitions
- */
-
-#pragma once
-
-#include <stddef.h>
-#include <Arduino.h>  // delay, random...
-#include "../esp32WS2811.h"
-
-class WS2811;
-
-/**
- * @brief Pure virtual base class to built effects. 
- * 
- * Effects have to be (publicly) inherit from this class.
- */
-class WS2811Effect {
- public:
-  virtual ~WS2811Effect() {}
-
-  /**
-   * @brief Run the effect.
-   * 
-   * @param[in] strip Pointer to the WS2811 instance (led strip) on which this effect will run.
-   * @param[in] numLeds Number of leds for the WS2811 instance.
-   */
-  virtual void run(WS2811* strip, size_t numLeds) = 0;
-};
-
-#include "TwinkleRandom.h"
-#include "RandomColours.h"
-#include "FadeColours.h"
-#include "LarsonScanner.h"
-#include "BlinkLed.h"
 #include "SnowSparkle.h"
+
+SnowSparkle::SnowSparkle(Colour baseColour, size_t maxNoSparkles, uint32_t minDelay, uint32_t maxDelay) :
+  _baseColour(baseColour),
+  _maxNoSparkles(maxNoSparkles),
+  _minDelay(minDelay),
+  _maxDelay(maxDelay) {}
+
+void SnowSparkle::run(WS2811* ws2811, size_t numLeds) {
+  ws2811->setAll(_baseColour.red, _baseColour.green, _baseColour.blue);
+  ws2811->show();
+  delay(20);
+
+  size_t noSparkles = random(_maxNoSparkles);
+  for (size_t i = 0; i < noSparkles; ++i) {
+    ws2811->setPixel(random(numLeds), 255, 255, 255);
+  }
+  ws2811->show();
+  delay(random(_minDelay, _maxDelay));
+}
