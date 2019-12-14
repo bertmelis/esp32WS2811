@@ -47,7 +47,7 @@ class BlinkLed : public WS2811Effect {
    * @param colour Colour the led will blink in.
    * @param delay time in milliseconds between fading out and fading in.
    */
-  explicit BlinkLed(Colour colour, uint32_t delay);
+  explicit BlinkLed(Colour colour, size_t pixel, uint32_t delay);
 
   /**
    * @brief Method which will be called by WS2811. See Effect - run.
@@ -59,5 +59,6 @@ class BlinkLed : public WS2811Effect {
 
  private:
   Colour _colour;
+  size_t _pixel;
   uint32_t _delay;
 };

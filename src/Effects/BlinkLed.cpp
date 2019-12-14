@@ -24,11 +24,15 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "BlinkLed.h"
 
-BlinkLed::BlinkLed(Colour colour, uint32_t delay) :
+BlinkLed::BlinkLed(Colour colour, size_t pixel, uint32_t delay) :
   _colour(colour),
+  _pixel(pixel),
   _delay(delay) {}
 
 void BlinkLed::run(WS2811* ws2811, size_t numLeds) {
+  ws2811->setAll(0, 0, 0);
+  ws2811->show();
+  delay(_delay);
   ws2811->setPixel(0, _colour.red, _colour.green, _colour.blue);
   ws2811->show();
   delay(_delay);

@@ -31,22 +31,25 @@ FadeColours::FadeColours(uint32_t steps, uint32_t delay) :
 void FadeColours::run(WS2811* ws2811, size_t numLeds) {
   Colour colour = colours[random(0, 13)];
   // Fade in
-  for (uint32_t i = 0; i < _steps; ++i) {
+  uint32_t i = 0;
+  while (i < _steps) {
     uint8_t red = colour.red * i / _steps;
     uint8_t green = colour.green * i / _steps;
     uint8_t blue = colour.blue * i / _steps;
     ws2811->setAll(red, green, blue);
     ws2811->show();
     delay(5);
+    ++i;
   }
   // Fade out
-  for (uint32_t i = _steps; i > 0; --i) {
+  while(i > 0) {
     uint8_t red = colour.red * i / _steps;
     uint8_t green = colour.green * i / _steps;
     uint8_t blue = colour.blue * i / _steps;
     ws2811->setAll(red, green, blue);
     ws2811->show();
     delay(5);
+    --i;
   }
   delay(_delay);
 }
