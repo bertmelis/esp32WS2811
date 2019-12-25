@@ -55,7 +55,7 @@ WS2811::WS2811(int dataPin, size_t numLeds, int channel) :
   _dataPin(dataPin),
   _numLeds(numLeds),
   _leds(nullptr),
-  _brightness(255),
+  _brightness(100),
   _effect(nullptr) {
     _leds = new Led[_numLeds];
   }
