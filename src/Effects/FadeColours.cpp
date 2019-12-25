@@ -42,7 +42,7 @@ void FadeColours::run(WS2811* ws2811, size_t numLeds) {
     ++i;
   }
   // Fade out
-  while(i > 0) {
+  while (i > 0) {
     uint8_t red = colour.red * i / _steps;
     uint8_t green = colour.green * i / _steps;
     uint8_t blue = colour.blue * i / _steps;
