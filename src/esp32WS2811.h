@@ -51,6 +51,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <esp32-hal-log.h>
 
 // Internal
+#include "Effects/Colour.h"  // Colour definition
 #include "Effects/Effect.h"  // includes all builtin effects
 
 class WS2811Effect;
@@ -113,6 +114,17 @@ class WS2811 {
    * @param blue blue value 0-255.
    */
   void setPixel(size_t index, uint8_t red, uint8_t green, uint8_t blue);
+
+  /**
+   * @brief Get the colour of an individual led.
+   * 
+   * Return the colour of the led at the given position.
+   * Returns all zero for an out-of-bound index.
+   * 
+   * @param index position on the string, zero-indexed.
+   * @return Colour struct holding the requested pixel's colour
+   */
+  Colour getPixel(size_t index) const;
 
   /**
    * @brief Turn off all leds on this string.

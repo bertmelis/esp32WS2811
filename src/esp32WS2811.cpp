@@ -92,6 +92,15 @@ void WS2811::setPixel(size_t index, uint8_t red, uint8_t green, uint8_t blue) {
   }
 }
 
+Colour WS2811::getPixel(size_t index) const {
+  Colour c;
+  if (index >= _numLeds) return c;
+  c.red = _leds[index].red;
+  c.green = _leds[index].green;
+  c.blue = _leds[index].blue;
+  return c;
+}
+
 void WS2811::clearAll() {
   for (size_t i = 0; i < _numLeds; ++i) {
     setPixel(i, 0, 0, 0);
