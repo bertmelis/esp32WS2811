@@ -22,34 +22,21 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include "FadeColours.h"
+#include "Circus.h"
 
-FadeColours::FadeColours(uint32_t steps, uint32_t delay) :
-  _steps(steps),
-  _delay(delay) {}
+Circus::Circus(uint32_t interval) :
+  _interval(interval) {}
 
-void FadeColours::run(WS2811* ws2811, size_t numLeds) {
-  Colour colour = colours[random(0, 13)];
-  // Fade in
-  uint32_t i = 0;
-  while (i < _steps) {
-    uint8_t red = colour.red * i / _steps;
-    uint8_t green = colour.green * i / _steps;
-    uint8_t blue = colour.blue * i / _steps;
-    ws2811->setAll(red, green, blue);
-    ws2811->show();
-    delay(5);
-    ++i;
+void Circus::_setup() {
+  _ledstrip->clearAll();
+  _ledstrip->show();
+}
+
+void Circus::_loop() {
+  size_t numLeds = _ledstrip->numLeds();
+  for (size_t i = 0; i < numLeds; ++i) {
+    _ledstrip->setPixel(i, colours[random(0, 12)]);
   }
-  // Fade out
-  while (i > 0) {
-    uint8_t red = colour.red * i / _steps;
-    uint8_t green = colour.green * i / _steps;
-    uint8_t blue = colour.blue * i / _steps;
-    ws2811->setAll(red, green, blue);
-    ws2811->show();
-    delay(5);
-    --i;
-  }
-  delay(_delay);
+  _ledstrip->show();
+  delay(_interval);
 }

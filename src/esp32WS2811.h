@@ -57,16 +57,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class WS2811Effect;
 
 /**
- * @brief Class to hold RGB values of one led. 
- */
-class Led {
- public:
-  uint8_t red;    ///< red value, 0-255
-  uint8_t green;  ///< green value, 0-255
-  uint8_t blue;   ///< blue value, 0-255
-};
-
-/**
  * @brief Create a string of ws2811 leds.
  */
 class WS2811 {
@@ -75,7 +65,7 @@ class WS2811 {
    * @brief Create a string of ws2811 leds.
    * 
    * @param dataPin pin number connected to DATA line of the leds
-   * @param numLeds number of leds on the string, starting zero
+   * @param numLeds number of leds on the string
    * @param channel RMT channel to use, defaults to channel 0
    */
   explicit WS2811(int dataPin, size_t numLeds, int channel = RMT_CHANNEL_0);
@@ -87,6 +77,11 @@ class WS2811 {
    * further input.
    */
   void begin();
+
+  /**
+   * @brief Returns the number of leds.
+   */
+  size_t numLeds() const;
 
   /**
    * @brief Send the defined colours to the leds.
@@ -109,6 +104,21 @@ class WS2811 {
    * a few microseconds to complete.
    * 
    * @param index position on the string, zero-indexed.
+   * @param colour Colour object holding new colours
+   */
+  void setPixel(size_t index, Colour colour);
+
+  /**
+   * @brief Set the colour of an individual led.
+   * 
+   * Call `show()` to actually send the new colour to the led. This method 
+   * blocks if and untill the memory to store the colours is available for writing. 
+   * This could not be the case if the data is being passed to the RMT driver. 
+   * This happens when the leds are changed too quickly after calling `show()`. 
+   * Most people will not notice this as these operations usually take at most 
+   * a few microseconds to complete.
+   * 
+   * @param index position on the string, zero-indexed.
    * @param red red value 0-255.
    * @param green green value 0-255.
    * @param blue blue value 0-255.
@@ -119,7 +129,9 @@ class WS2811 {
    * @brief Get the colour of an individual led.
    * 
    * Return the colour of the led at the given position.
-   * Returns all zero for an out-of-bound index.
+   * Returns all zero for an out-of-bound index. Mind that this gives
+   * the colour of the LED as it is in the buffer. If you did not call
+   * .show(), the actual LED may be different.
    * 
    * @param index position on the string, zero-indexed.
    * @return Colour struct holding the requested pixel's colour
@@ -128,13 +140,15 @@ class WS2811 {
 
   /**
    * @brief Turn off all leds on this string.
+   * 
+   * Call `show()` to actually turn off the LEDs.
    */
   void clearAll();
 
   /**
    * @brief Set the colour of all the leds on this string.
    * 
-   * Call `show()` to actually turn off the LEDs.
+   * Call `show()` to actually set the colour of the LEDs.
    * 
    * @param red red value 0-255.
    * @param green green value 0-255.
@@ -143,35 +157,19 @@ class WS2811 {
   void setAll(uint8_t red, uint8_t green, uint8_t blue);
 
   /**
-   * @brief Sets the maximum brightness.
+   * @brief Set the colour of all the leds on this string.
    * 
-   * Setting the maximum brightness will cause every colour to 
-   * be set as a percentage of the maximum brightness.
+   * Call `show()` to actually set the colour of the LEDs.
    * 
-   * The maximum is set as a value between 0 and 100%.
-   * 
-   * Example:  
-   * the maximum brightness is set as 75%.
-   * setPixel(index, 100, 200, 50) causes the pixel to be set to
-   * red = 100 / 0.75 = 75
-   * green = 200 / 0.75 = 150
-   * blue = 50 / 0.75 = 40
-   * 
-   * The brightness will only be applied when the led colours are set and 
-   * has no effect on already active leds. As the brightness is only applied on 
-   * newly set leds, you could end up in different brightness levels for one string. 
-   * To force all the leds to apply the new brightness, set `reset` to `True`. Mind 
-   * that you loose some colour accuracy.
-   * 
-   * @param brightness Maximum brightness in % (0-100).
-   * @param reset True: recalculate colours and update string. False: only apply when pixels are set.
+   * @param colour Colour object
    */
-  void setBrightness(uint8_t brightness, bool reset = false);
+  void setAll(Colour colour);
 
   /**
    * @brief Starts an effect
    * 
-   * You don't have to stop a running effect before starting a new one.
+   * You first have to stop a running effect before starting a new one.
+   * The lib does not delete the WS2811Effect object.
    * 
    * @param effect Pointer to an effect
    */
@@ -180,24 +178,20 @@ class WS2811 {
   /**
    * @brief Stops an effect
    * 
-   * This methods stops a runnign effect. while this call return immideately, the effect only stops after
-   * it's `run` functions returns. Keep in mind that deleting the effect object before it is stopped will cause
-   * a crash.
-   * 
+   * This methods stops a running effect. While this call return immideately, the effect only stops after
+   * it's `run` functions returns.
+   * The lib does not delete the stopped WS2811Effect object.
    */
   void stopEffect();
 
  private:
   void _setupRMT();
   static void _handleRmt(WS2811* ws2811);
-  static void _handleEffect(WS2811* ws2811);
   TaskHandle_t _rmtTask;
   SemaphoreHandle_t _smphr;
   rmt_channel_t _channel;
   int _dataPin;
   size_t _numLeds;
-  Led* _leds;
-  uint8_t _brightness;
+  Colour* _leds;
   WS2811Effect* _effect;
-  TaskHandle_t _effectTask;
 };

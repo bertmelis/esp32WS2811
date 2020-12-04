@@ -22,46 +22,21 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-/**
- * @file LarsonScanner.h
- * @brief Larson Scanner effect definitions
- */
-
 #pragma once
 
 #include <stddef.h>
-#include <Arduino.h>  // delay, random...
+#include <Arduino.h>  // millis, random...
 #include "Effect.h"
 #include "Colour.h"
 
-/**
- * @brief Larson scanner effect.
- * 
- * A scanner travels from left to right and backwards
- */
-class LarsonScanner : public WS2811Effect {
+class Circus : public WS2811Effect {
  public:
-  /**
-   * @brief Creates the "Larson Scanner" effect
-   * 
-   * @param colour Colour of the scanner
-   * @param size Number of LEDs of the scanner
-   * @param speedDelay Speed of the scanner (higher = slower)
-   * @param delay Time between travelling
-   */
-  explicit LarsonScanner(Colour colour, uint32_t size, uint32_t speedDelay, uint32_t delay);
-
-  /**
-   * @brief Method which will be called by WS2811. See Effect - run.
-   * 
-   * @param strip Pointer to the WS2811 instance (led strip) on which this effect will run.
-   * @param numLeds Number of leds for the WS2811 instance.
-   */
-  void run(WS2811* ws2811, size_t numLeds);
+  explicit Circus(uint32_t interval);
 
  private:
-  Colour _colour;
-  uint32_t _size;
-  uint32_t _speedDelay;
-  uint32_t _delay;
+  void _setup();
+  void _loop();
+
+ private:
+  uint32_t _interval;
 };

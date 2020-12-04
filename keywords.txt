@@ -4,22 +4,19 @@
 
 WS2811	KEYWORD1
 
-TwinkleRandom	KEYWORD1
 RandomColours	KEYWORD1
-FadeColours	KEYWORD1
-LarsonScanner	KEYWORD1
-BlinkLed	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
 begin	KEYWORD2
+numLeds	KEYWORD2
 show	KEYWORD2
 setPixel	KEYWORD2
+getPixel	KEYWORD2
 clearAll	KEYWORD2
 setAll	KEYWORD2
-setBrightness	KEYWORD2
 startEffect	KEYWORD2
 stopEffect	KEYWORD2
 
@@ -27,4 +24,7 @@ stopEffect	KEYWORD2
 # Constants (LITERAL1)
 #######################################
 
-#CONSTANT	LITERAL2
+
+#######################################
+# Constants (LITERAL2)
+#######################################

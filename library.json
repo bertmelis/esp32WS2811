@@ -1,5 +1,5 @@
 {
-  "name": "esp32WS2811oWiFi",
+  "name": "esp32WS2811",
   "version": "0.1.0",
   "keywords": "Arduino, esp32, WS2811, WS2812, RMT",
   "description": "Arduino library for ESP32 to drive WS2811 LEDs using the RMT peripheral",

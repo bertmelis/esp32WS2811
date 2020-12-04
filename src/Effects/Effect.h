@@ -33,7 +33,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include <stddef.h>
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+
 #include <Arduino.h>  // delay, random...
+
 #include "../esp32WS2811.h"
 
 class WS2811;
@@ -45,20 +50,20 @@ class WS2811;
  */
 class WS2811Effect {
  public:
-  virtual ~WS2811Effect() {}
+  WS2811Effect();
+  virtual ~WS2811Effect();
+  void start(WS2811* ledstrip);
+  void stop();
 
-  /**
-   * @brief Run the effect.
-   * 
-   * @param[in] strip Pointer to the WS2811 instance (led strip) on which this effect will run.
-   * @param[in] numLeds Number of leds for the WS2811 instance.
-   */
-  virtual void run(WS2811* strip, size_t numLeds) = 0;
+ private:
+  virtual void _setup() = 0;
+  virtual void _loop() = 0;
+  static void _effectTask(WS2811Effect* e);
+
+ protected:
+  TaskHandle_t _task;
+  WS2811* _ledstrip;
 };
 
-#include "TwinkleRandom.h"
-#include "RandomColours.h"
-#include "FadeColours.h"
-#include "LarsonScanner.h"
-#include "BlinkLed.h"
+#include "Circus.h"
 #include "SnowSparkle.h"

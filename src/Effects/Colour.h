@@ -53,12 +53,6 @@ class Colour {
    */
   Colour(uint8_t r, uint8_t g, uint8_t b);
 
-  /**
-   * @brief Copy constructor.
-   * 
-   * @param c Colour to be copied
-   */
-  Colour(const Colour& c);
   uint8_t red;    ///< red value, 0-255
   uint8_t green;  ///< green value, 0-255
   uint8_t blue;   ///< blue value, 0-255

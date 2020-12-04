@@ -27,18 +27,23 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 SnowSparkle::SnowSparkle(Colour baseColour, size_t maxNoSparkles, uint32_t minDelay, uint32_t maxDelay) :
   _baseColour(baseColour),
   _maxNoSparkles(maxNoSparkles),
+  _noSparkles(random(_maxNoSparkles)),
   _minDelay(minDelay),
   _maxDelay(maxDelay) {}
 
-void SnowSparkle::run(WS2811* ws2811, size_t numLeds) {
-  ws2811->setAll(_baseColour.red, _baseColour.green, _baseColour.blue);
-  ws2811->show();
+void SnowSparkle::_setup() {
+  _ledstrip->setAll(_baseColour);
+  _ledstrip->show();
   delay(20);
+}
 
+void SnowSparkle::_loop() {
+  size_t numLeds = _ledstrip->numLeds();
   size_t noSparkles = random(_maxNoSparkles);
   for (size_t i = 0; i < noSparkles; ++i) {
-    ws2811->setPixel(random(numLeds), 255, 255, 255);
+    _ledstrip->setPixel(random(numLeds), 255, 255, 255);
   }
-  ws2811->show();
+  _ledstrip->show();
   delay(random(_minDelay, _maxDelay));
+  _setup();
 }

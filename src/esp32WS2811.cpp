@@ -55,14 +55,12 @@ WS2811::WS2811(int dataPin, size_t numLeds, int channel) :
   _dataPin(dataPin),
   _numLeds(numLeds),
   _leds(nullptr),
-  _brightness(100),
   _effect(nullptr) {
-    _leds = new Led[_numLeds];
+    _leds = new Colour[_numLeds];
   }
 
 WS2811::~WS2811() {
-  xSemaphoreTake(_smphr, portMAX_DELAY);
-  vTaskDelete(_effectTask);
+  stopEffect();
   vTaskDelete(_rmtTask);
   vSemaphoreDelete(_smphr);
   delete[] _leds;
@@ -71,40 +69,43 @@ WS2811::~WS2811() {
 void WS2811::begin() {
   _setupRMT();
   _smphr = xSemaphoreCreateBinary();
-  xSemaphoreGive(_smphr);  // semaphore is created 'empty', so has to be given for first use
-  xTaskCreate((TaskFunction_t)&_handleRmt, "rmtTask", 2000, this, 5, &_rmtTask);
-  xTaskCreate((TaskFunction_t)&_handleEffect, "effectTask", 2000, this, 5, &_effectTask);
-  vTaskSuspend(_effectTask);
+  xSemaphoreGive(_smphr);  // release emaphores for first use
+  xTaskCreate((TaskFunction_t)&_handleRmt, "rmtTask", 2000, this, 1, &_rmtTask);
+}
+
+size_t WS2811::numLeds() const {
+  return _numLeds;
 }
 
 void WS2811::show() {
   xTaskNotifyGive(_rmtTask);
 }
 
-void WS2811::setPixel(size_t index, uint8_t red, uint8_t green, uint8_t blue) {
+void WS2811::setPixel(size_t index, Colour colour) {
   if (xSemaphoreTake(_smphr, 100) == pdTRUE) {
-    _leds[index].red   = red * _brightness / 100;
-    _leds[index].green = green * _brightness / 100;
-    _leds[index].blue  = blue * _brightness / 100;
+    _leds[index] = colour;
     xSemaphoreGive(_smphr);
   } else {
     log_e("could not set pixel");
   }
 }
 
+void WS2811::setPixel(size_t index, uint8_t red, uint8_t green, uint8_t blue) {
+  Colour c(red, green, blue);
+  setPixel(index, c);
+}
+
 Colour WS2811::getPixel(size_t index) const {
-  Colour c;
-  if (index >= _numLeds) return c;
-  c.red = _leds[index].red;
-  c.green = _leds[index].green;
-  c.blue = _leds[index].blue;
-  return c;
+  if (index >= _numLeds) {
+    Colour c;
+    return c;
+  }
+  return _leds[index];
 }
 
 void WS2811::clearAll() {
-  for (size_t i = 0; i < _numLeds; ++i) {
-    setPixel(i, 0, 0, 0);
-  }
+  Colour c;  // initializes to rgb(0,0,0)
+  setAll(c);
 }
 
 void WS2811::setAll(uint8_t red, uint8_t green, uint8_t blue) {
@@ -113,23 +114,31 @@ void WS2811::setAll(uint8_t red, uint8_t green, uint8_t blue) {
   }
 }
 
-void WS2811::setBrightness(uint8_t brightness, bool reset) {
-  _brightness = brightness;
-  if (_brightness > 100) _brightness = 100;
-  if (reset) {
-    for (size_t i = 0; i < _numLeds; ++i) {
-      setPixel(i, _leds[i].red, _leds[i].green, _leds[i].blue);
-    }
+void WS2811::setAll(Colour colour) {
+  for (size_t i = 0; i < _numLeds; ++i) {
+    setPixel(i, colour);
   }
 }
 
 void WS2811::startEffect(WS2811Effect* effect) {
+  if (!effect) {
+    log_w("Empty effect ptr: effect not started");
+    return;  // avoids check for nullptr on each loop
+  }
+  if (_effect) {
+    stopEffect();
+  }
   _effect = effect;
-  vTaskResume(_effectTask);
+  _effect->start(this);
 }
 
 void WS2811::stopEffect() {
-  xTaskNotifyGive(_effectTask);
+  if (!_effect) {
+    log_w("No effect available: unable to stop");
+    return;
+  }
+  _effect->stop();
+  _effect = nullptr;
 }
 
 void WS2811::_setupRMT() {
@@ -155,14 +164,13 @@ void WS2811::_handleRmt(WS2811* ws2811) {
   static rmt_item32_t* currentItem = &rmtItems[0];
 
   while (true) {
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // clears all flags, blocks on next call
     currentItem = &rmtItems[0];
     if (xSemaphoreTake(ws2811->_smphr, 100) == pdTRUE) {
       for (size_t i = 0; i < ws2811->_numLeds; ++i) {
-        uint32_t currentPixel =
-            ws2811->_leds[i].green << 16 |
-            ws2811->_leds[i].red << 8 |
-            ws2811->_leds[i].blue;
+        uint32_t currentPixel = ws2811->_leds[i].green << 16 |
+                                ws2811->_leds[i].red << 8 |
+                                ws2811->_leds[i].blue;
         for (int8_t j = 23; j >= 0; --j) {
           // We have 24 bits of data representing the red, green and blue channels. The value of the
           // 24 bits to output is in the variable current_pixel.  We now need to stream this value
@@ -185,15 +193,20 @@ void WS2811::_handleRmt(WS2811* ws2811) {
   }
 }
 
+/*
 void WS2811::_handleEffect(WS2811* ws2811) {
   while (true) {
-    if (ws2811->_effect) {
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // clears all flags, blocks on next call
+    ws2811->_runEffect = true;
+    ws2811->_effect->setup(ws2811, ws2811->_numLeds);
+    while (true) {
       ws2811->_effect->run(ws2811, ws2811->_numLeds);
-      if (ulTaskNotifyTake(pdTRUE, 0) > 0) {
-        ws2811->_effect = nullptr;
-        vTaskSuspend(NULL);
+      if (xSemaphoreTake(ws2811->_effectSmphr, 0) == pdTRUE) {
+        xSemaphoreGive(ws2811->_effectSmphr);  // prevent stopping on next effect
+        ws2811->_runEffect = false;
+        break;
       }
     }
-    vTaskDelay(1);
   }
 }
+*/

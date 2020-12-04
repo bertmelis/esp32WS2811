@@ -34,28 +34,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Effect.h"
 #include "Colour.h"
 
-/**
- * @brief Dim undertone with sparkles.
- * 
- */
 class SnowSparkle : public WS2811Effect {
  public:
-  /**
-   * @brief Creates the effect instance
-   */
-  explicit SnowSparkle(Colour baseColour, size_t maxNoSparkles, uint32_t minDelay, uint32_t maxDelay);
-
-  /**
-   * @brief Method which will be called by WS2811. See Effect - run.
-   * 
-   * @param strip Pointer to the WS2811 instance (led strip) on which this effect will run.
-   * @param numLeds Number of leds for the WS2811 instance.
-   */
-  void run(WS2811* ws2811, size_t numLeds);
+  SnowSparkle(Colour baseColour, size_t maxNoSparkles, uint32_t minDelay, uint32_t maxDelay);
 
  private:
+  void _setup();
+  void _loop();
+
   Colour _baseColour;
   size_t _maxNoSparkles;
+  size_t _noSparkles;
   uint32_t _minDelay;
   uint32_t _maxDelay;
 };

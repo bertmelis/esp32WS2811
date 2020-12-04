@@ -34,12 +34,6 @@ Colour::Colour(uint8_t r, uint8_t g, uint8_t b) :
   green(g),
   blue(b) {}
 
-Colour::Colour(const Colour& c) {
-  red = c.red;
-  green = c.green;
-  blue = c.blue;
-}
-
 Colour colours[] {
   {0xFF, 0x00, 0x00},  /// red
   {0x80, 0x00, 0x00},  /// maroon
