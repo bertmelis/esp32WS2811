@@ -67,3 +67,4 @@ class WS2811Effect {
 
 #include "Circus.h"
 #include "SnowSparkle.h"
+#include "Aurora.h"

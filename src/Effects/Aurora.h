@@ -1,6 +1,8 @@
 /*
 
-Copyright 2019 Bert Melis
+Copyright (c) 2020 Matthias Folte
+
+Adapted for this lib by Bert Melis
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
@@ -27,14 +29,42 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Effect.h"
 #include "Colour.h"
 
-class Circus : public WS2811Effect {
+
+//WAVE CONFIG
+#define W_COUNT 6                 // Number of simultaneous waves
+#define W_SPEED_FACTOR 3          // Higher number, higher speed
+#define W_WIDTH_FACTOR 1          // Higher number, smaller waves
+#define W_COLOR_WEIGHT_PRESET 1   // What color weighting to choose
+#define W_RANDOM_SEED 11          // Change this seed for a different pattern. If you read from
+                                  // an analog input here you can get a different pattern everytime.
+
+class BorealisWave {
  public:
-  explicit Circus(uint32_t interval);
+  explicit BorealisWave(size_t numLeds);
+  Colour* getColorForLED(int ledIndex);
+  void update();
+  bool stillAlive();
+  
+ private:
+  size_t _numLeds;
+  int _ttl;
+  uint8_t _basecolor;
+  float _basealpha;
+  int _age;
+  int _width;
+  float _center;
+  bool _goingleft;
+  float _speed;
+  bool _alive;
+};
+
+
+class Aurora : public WS2811Effect {
+ public:
+  explicit Aurora();
 
  private:
   void _setup();
   void _loop();
-
- private:
-  uint32_t _interval;
+  BorealisWave* _waves[W_COUNT];
 };

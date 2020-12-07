@@ -29,8 +29,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include <stddef.h>
-#include <Arduino.h>  // delay, random...
 #include "Effect.h"
 #include "Colour.h"
 

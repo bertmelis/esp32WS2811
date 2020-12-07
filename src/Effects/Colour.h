@@ -56,6 +56,13 @@ class Colour {
   uint8_t red;    ///< red value, 0-255
   uint8_t green;  ///< green value, 0-255
   uint8_t blue;   ///< blue value, 0-255
+
+  /**
+   * @brief Adds a colour to this colour.
+   * 
+   * @param rhs colour to add
+   */
+  Colour& operator+=(const Colour& rhs);
 };
 
 /**

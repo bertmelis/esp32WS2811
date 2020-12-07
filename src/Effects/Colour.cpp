@@ -34,6 +34,19 @@ Colour::Colour(uint8_t r, uint8_t g, uint8_t b) :
   green(g),
   blue(b) {}
 
+Colour& Colour::operator+=(const Colour& rhs) {
+  uint16_t r = red + rhs.red;
+  if (r > 255)  r = 255;
+  red = r;
+  uint16_t g = green + rhs.green;
+  if (g > 255)  g = 255;
+  green = g;
+  uint16_t b = blue + rhs.blue;
+  if (b > 255)  b = 255;
+  blue = b;
+  return *this;
+}
+
 Colour colours[] {
   {0xFF, 0x00, 0x00},  /// red
   {0x80, 0x00, 0x00},  /// maroon
