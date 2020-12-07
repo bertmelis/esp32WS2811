@@ -35,7 +35,7 @@ The pulldown resistor on OE (output enable) prevents the output
 to float during startup.
 Unused pins are left unconnected as they have internal 10k pullups.
 
-# Firmware
+## Firmware
 
 Include the header file and define your LED string:
 
@@ -85,7 +85,11 @@ void stopEffect();
 
 You don't have to stop a running effect before starting a new one. The effect stops immediately and does not wait for it's routine to complete.
 
-# Credits
+## Sample application
+
+You can find a full working application in this repo: [ledController](https://github.com/bertmelis/ledController)
+
+## Credits
 
 The RMT driver for WS2811/WS2812 comes from @nkolban [https://github.com/nkolban/esp32-snippets](https://github.com/nkolban/esp32-snippets).
 Effects are heavily inspired and/or copied from [https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/](https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/)
