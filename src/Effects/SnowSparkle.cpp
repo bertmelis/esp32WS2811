@@ -93,6 +93,9 @@ void SnowSparkle::_loop() {
 
 void SnowSparkle::_cleanup() {
   for (size_t i = 0; i < _nrSparkles; ++i) {
-    delete _sparkles[i];
+    if (_sparkles[i]) {
+      delete _sparkles[i];
+      _sparkles[i] = nullptr;
+    }
   }
 }
