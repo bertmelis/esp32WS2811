@@ -28,7 +28,7 @@ const Colour SnowSparkle::Sparkle::_flake(255, 255, 255);
 
 SnowSparkle::Sparkle::Sparkle(SnowSparkle* parent, size_t steps):
   _parent(parent),
-  _pos(random(_parent->_ledstrip->numLeds() - 1)),
+  _pos(random(_parent->_ledstrip->numLeds())),
   _step(1),
   _steps(steps) {}
 
