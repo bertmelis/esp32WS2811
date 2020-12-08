@@ -40,3 +40,7 @@ void Circus::_loop() {
   _ledstrip->show();
   delay(_interval);
 }
+
+void Circus::_cleanup() {
+  // nothing to clean up
+}

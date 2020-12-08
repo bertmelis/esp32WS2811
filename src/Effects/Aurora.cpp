@@ -62,7 +62,7 @@ uint8_t getWeightedColor(uint8_t weighting) {
   return 0;  // avoid compiler warning
 }
 
-BorealisWave::BorealisWave(size_t numLeds) :
+Aurora::BorealisWave::BorealisWave(size_t numLeds) :
   _numLeds(numLeds),
   _ttl(random(500, 1501)),
   _basecolor(getWeightedColor(W_COLOR_WEIGHT_PRESET)),
@@ -74,7 +74,7 @@ BorealisWave::BorealisWave(size_t numLeds) :
   _speed(random(10, 30) / 100.0 * W_SPEED_FACTOR),
   _alive(true) {}
 
-Colour* BorealisWave::getColorForLED(int ledIndex) {
+Colour* Aurora::BorealisWave::getColorForLED(int ledIndex) {
   if(ledIndex < _center - _width / 2 || ledIndex > _center + _width / 2) {
     //Position out of range of this wave
     return nullptr;
@@ -104,7 +104,7 @@ Colour* BorealisWave::getColorForLED(int ledIndex) {
   }
 }
 
-void BorealisWave::update() {
+void Aurora::BorealisWave::update() {
   if (_goingleft) {
     _center -= _speed;
   } else {
@@ -126,11 +126,17 @@ void BorealisWave::update() {
   }
 }
 
-bool BorealisWave::stillAlive() {
+bool Aurora::BorealisWave::stillAlive() {
   return _alive;
 }
 
-Aurora::Aurora() {}
+Aurora::Aurora() :
+  _waves() {}
+
+Aurora::~Aurora() {
+  stop();
+  _cleanup();
+}
 
 void Aurora::_setup() {
   _ledstrip->clearAll();
@@ -169,3 +175,9 @@ void Aurora::_loop() {
   _ledstrip->show();
   delay(20);
 }
+
+void Aurora::_cleanup() {
+  for (size_t i = 0; i < W_COUNT; ++i) {
+    delete _waves[i];
+  }
+} 

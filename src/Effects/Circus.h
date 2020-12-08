@@ -34,6 +34,7 @@ class Circus : public WS2811Effect {
  private:
   void _setup();
   void _loop();
+  void _cleanup();
 
  private:
   uint32_t _interval;

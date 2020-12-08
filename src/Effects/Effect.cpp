@@ -16,6 +16,7 @@ void WS2811Effect::start(WS2811* ledstrip) {
 void WS2811Effect::stop() {
   if (!_task) return;
   vTaskDelete(_task);
+  _cleanup();
 }
 
 void WS2811Effect::_effectTask(WS2811Effect* e) {

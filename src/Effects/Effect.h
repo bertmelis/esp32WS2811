@@ -36,6 +36,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <freertos/semphr.h>
 
 #include <Arduino.h>  // delay, random...
 
@@ -58,6 +59,7 @@ class WS2811Effect {
  private:
   virtual void _setup() = 0;
   virtual void _loop() = 0;
+  virtual void _cleanup() = 0;
   static void _effectTask(WS2811Effect* e);
 
  protected:

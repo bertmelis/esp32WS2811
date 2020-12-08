@@ -38,33 +38,34 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define W_RANDOM_SEED 11          // Change this seed for a different pattern. If you read from
                                   // an analog input here you can get a different pattern everytime.
 
-class BorealisWave {
- public:
-  explicit BorealisWave(size_t numLeds);
-  Colour* getColorForLED(int ledIndex);
-  void update();
-  bool stillAlive();
-  
- private:
-  size_t _numLeds;
-  int _ttl;
-  uint8_t _basecolor;
-  float _basealpha;
-  int _age;
-  int _width;
-  float _center;
-  bool _goingleft;
-  float _speed;
-  bool _alive;
-};
-
-
 class Aurora : public WS2811Effect {
+  class BorealisWave {
+  public:
+    explicit BorealisWave(size_t numLeds);
+    Colour* getColorForLED(int ledIndex);
+    void update();
+    bool stillAlive();
+    
+  private:
+    size_t _numLeds;
+    int _ttl;
+    uint8_t _basecolor;
+    float _basealpha;
+    int _age;
+    int _width;
+    float _center;
+    bool _goingleft;
+    float _speed;
+    bool _alive;
+  };
+
  public:
   explicit Aurora();
+  ~Aurora();
 
  private:
   void _setup();
   void _loop();
+  void _cleanup();
   BorealisWave* _waves[W_COUNT];
 };

@@ -29,20 +29,41 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include <array>
+
 #include "Effect.h"
 #include "Colour.h"
 
 class SnowSparkle : public WS2811Effect {
+ private:
+  class Sparkle {
+   public:
+    Sparkle(SnowSparkle* parent, size_t steps);
+    ~Sparkle();
+    void update();
+    bool finished() const;
+
+   private:
+    SnowSparkle* _parent;
+    size_t _pos;
+    size_t _step;
+    float _steps;
+    const static Colour _flake;
+  };
+
  public:
-  SnowSparkle(Colour baseColour, size_t maxNoSparkles, uint32_t minDelay, uint32_t maxDelay);
+  SnowSparkle(Colour baseColour, size_t nrSparkles, uint32_t minDelay, uint32_t maxDelay);
 
  private:
   void _setup();
   void _loop();
+  void _cleanup();
 
   Colour _baseColour;
-  size_t _maxNoSparkles;
-  size_t _noSparkles;
+  const size_t _nrSparkles;
+  Sparkle** _sparkles;
+  uint32_t _lastMillis;
   uint32_t _minDelay;
   uint32_t _maxDelay;
+  uint32_t _nextDelay;
 };

@@ -83,7 +83,11 @@ void WS2811::show() {
 
 void WS2811::setPixel(size_t index, Colour colour) {
   if (xSemaphoreTake(_smphr, 100) == pdTRUE) {
-    _leds[index] = colour;
+    if (index < _numLeds) {
+      _leds[index] = colour;
+    } else {
+      log_w("setting pixel outside range");
+    }
     xSemaphoreGive(_smphr);
   } else {
     log_e("could not set pixel");
@@ -91,16 +95,17 @@ void WS2811::setPixel(size_t index, Colour colour) {
 }
 
 void WS2811::setPixel(size_t index, uint8_t red, uint8_t green, uint8_t blue) {
+
   Colour c(red, green, blue);
   setPixel(index, c);
 }
 
 Colour WS2811::getPixel(size_t index) const {
-  if (index >= _numLeds) {
-    Colour c;
-    return c;
+  if (index < _numLeds) {
+    return _leds[index];
   }
-  return _leds[index];
+  Colour c;
+  return c;
 }
 
 void WS2811::clearAll() {
