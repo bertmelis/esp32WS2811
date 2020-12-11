@@ -39,7 +39,7 @@ Unused pins are left unconnected as they have internal 10k pullups.
 
 Include the header file and define your LED string:
 
-```C++
+```cpp
 #include <esp32WS2811.h>
 
 // first argument is the data pin, the second argument is the number of LEDs
@@ -48,7 +48,7 @@ WS2811 yourLedString(18, 50);
 
 Start the LED string:
 
-```C++
+```cpp
 void setup() {
   // include your other code
 
@@ -58,7 +58,7 @@ void setup() {
 
 Change LED colours:
 
-```C++
+```cpp
 Colour colour = yourLedString.getPixel(size_t index);  // gives you the Colour of the led on index.
 yourLedString.setPixel(size_t index, uint32_t red, uint32_t green, uint32_t blue);
 yourLedString.show();  // this actually makes the LEDs light up
@@ -66,7 +66,7 @@ yourLedString.show();  // this actually makes the LEDs light up
 
 A number of helpers methods are available:
 
-```C++
+```cpp
 yourLedString.clearAll();  // turns off all LEDs
 yourLedString.setAll(Colour colour);  // // gives all LEDs the specified colour
 yourLedString.setAll(uint32_t red, uint32_t green, uint32_t blue);  // gives all LEDs the specified colour
@@ -78,7 +78,7 @@ Keep in mind that all these methods require to call `show()` afterwards.
 
 Starting and stopping an effect is done by:
 
-```C++
+```cpp
 void startEffect(WS2811Effect* effect);
 void stopEffect();
 ```
@@ -91,7 +91,5 @@ You can find a full working application in this repo: [ledController](https://gi
 
 ## Credits
 
-The RMT driver for WS2811/WS2812 comes from @nkolban [https://github.com/nkolban/esp32-snippets](https://github.com/nkolban/esp32-snippets).
-
-Effects:
-  - Aurora effect source from https://github.com/Mazn1191/Arduino-Borealis
+- The RMT driver for WS2811/WS2812 comes from @nkolban [https://github.com/nkolban/esp32-snippets](https://github.com/nkolban/esp32-snippets).
+- Aurora effect source from https://github.com/Mazn1191/Arduino-Borealis
