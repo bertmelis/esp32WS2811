@@ -92,4 +92,6 @@ You can find a full working application in this repo: [ledController](https://gi
 ## Credits
 
 The RMT driver for WS2811/WS2812 comes from @nkolban [https://github.com/nkolban/esp32-snippets](https://github.com/nkolban/esp32-snippets).
-Effects are heavily inspired and/or copied from [https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/](https://www.tweaking4all.com/hardware/arduino/adruino-led-strip-effects/)
+
+Effects:
+  - Aurora effect source from https://github.com/Mazn1191/Arduino-Borealis

@@ -22,6 +22,7 @@ void setup() {
   // add effects
   effects.push_back(new Circus(1000));
   effects.push_back(new SnowSparkle({82, 56, 13}, 3, 100, 500));
+  effects.push_back(new Aurora);
 
   // output enable level shifter
   pinMode(23, OUTPUT);
