@@ -24,12 +24,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /**
  * @file Colour.h
- * @brief Colour class definitions and basic colour definitions
+ * @brief Colour class definitions, basic colour definitions and a ColourHSV class whit implicit conversion to RGB-Colour
  */
 
 #pragma once
 
 #include <stdint.h>
+#include <cmath>  // abs, fmod
 
 /**
  * @brief Class to hold RGB values. 
@@ -63,9 +64,41 @@ class Colour {
    * @param rhs colour to add
    */
   Colour& operator+=(const Colour& rhs);
+
+  /**
+   * @brief Array that holds basic colours. 
+   */
+  static const Colour colours[12];
 };
 
 /**
- * @brief Array that holds basic colours. 
+ * @brief Class to hold HSV values with conversion to RGB
  */
-extern Colour colours[12];
+class ColourHSV {
+ public:
+  /**
+   * @brief Create a colour.
+   * 
+   * When no arguments are given to instantiate the class, the colour 
+   * will be set to black (zero value for hue, saturationn and value)
+   */
+  ColourHSV();
+
+  /**
+   * @brief Create a colour with the given values.
+   * 
+   * @param h hue, 0-360
+   * @param s saturation, 0-100
+   * @param v value, 0-100
+   */
+  ColourHSV(float h, float s, float v);
+
+  /**
+   * @brief Implicit conversion from ColourHSV to RGB Colour 
+   */
+  operator Colour() const;
+
+ float hue;   ///< hue, 0-360
+ float sat;   ///< saturation, 0-1 (converted from percentage to absolute value)
+ float val;   ///< value, 0-1 (converted from percentage to absolute value)
+};

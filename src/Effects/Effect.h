@@ -34,9 +34,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <stddef.h>
 
+extern "C" {
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/semphr.h>
+}
 
 #include <Arduino.h>  // delay, random...
 
@@ -70,3 +72,4 @@ class WS2811Effect {
 #include "Circus.h"
 #include "SnowSparkle.h"
 #include "Aurora.h"
+#include "Autumn.h"

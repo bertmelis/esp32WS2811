@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Bert Melis
+Copyright 2022 Bert Melis
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
@@ -22,25 +22,27 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include "Circus.h"
+#pragma once
 
-Circus::Circus(uint32_t interval) :
-  _interval(interval) {}
+#include "Effect.h"
+#include "Colour.h"
 
-void Circus::_setup() {
-  _ledstrip->clearAll();
-  _ledstrip->show();
-}
+class Autumn : public WS2811Effect {
+ public:
+  explicit Autumn(uint32_t steps, uint32_t delay);
 
-void Circus::_loop() {
-  size_t numLeds = _ledstrip->numLeds();
-  for (size_t i = 0; i < numLeds; ++i) {
-    _ledstrip->setPixel(i, Colour::colours[random(0, 12)]);
-  }
-  _ledstrip->show();
-  delay(_interval);
-}
+ private:
+  void _setup();
+  void _loop();
+  void _cleanup();
 
-void Circus::_cleanup() {
-  // nothing to clean up
-}
+ private:
+  static const ColourHSV _colours[];
+  static const size_t _numberColours;
+  uint32_t _steps;
+  uint32_t _step;
+  uint32_t _delay;
+  uint32_t _lastMillis;
+  uint8_t _currentColourIndex;
+  uint8_t _nextColourIndex;
+};

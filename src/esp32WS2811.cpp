@@ -95,7 +95,6 @@ void WS2811::setPixel(size_t index, Colour colour) {
 }
 
 void WS2811::setPixel(size_t index, uint8_t red, uint8_t green, uint8_t blue) {
-
   Colour c(red, green, blue);
   setPixel(index, c);
 }
