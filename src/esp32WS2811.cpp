@@ -107,6 +107,45 @@ Colour WS2811::getPixel(size_t index) const {
   return c;
 }
 
+void WS2811::setRed(size_t index, uint8_t red) {
+  if (xSemaphoreTake(_smphr, 100) == pdTRUE) {
+    if (index < _numLeds) {
+      _leds[index].red = red;
+    } else {
+      log_w("setting pixel outside range");
+    }
+    xSemaphoreGive(_smphr);
+  } else {
+    log_e("could not set pixel");
+  }
+}
+
+void WS2811::setGreen(size_t index, uint8_t green) {
+  if (xSemaphoreTake(_smphr, 100) == pdTRUE) {
+    if (index < _numLeds) {
+      _leds[index].green = green;
+    } else {
+      log_w("setting pixel outside range");
+    }
+    xSemaphoreGive(_smphr);
+  } else {
+    log_e("could not set pixel");
+  }
+}
+
+void WS2811::setBlue(size_t index, uint8_t blue) {
+  if (xSemaphoreTake(_smphr, 100) == pdTRUE) {
+    if (index < _numLeds) {
+      _leds[index].blue = blue;
+    } else {
+      log_w("setting pixel outside range");
+    }
+    xSemaphoreGive(_smphr);
+  } else {
+    log_e("could not set pixel");
+  }
+}
+
 void WS2811::clearAll() {
   Colour c;  // initializes to rgb(0,0,0)
   setAll(c);

@@ -98,10 +98,6 @@ class WS2811 {
    * 
    * Call `show()` to actually send the new colour to the led. This method 
    * blocks if and untill the memory to store the colours is available for writing. 
-   * This could not be the case if the data is being passed to the RMT driver. 
-   * This happens when the leds are changed too quickly after calling `show()`. 
-   * Most people will not notice this as these operations usually take at most 
-   * a few microseconds to complete.
    * 
    * @param index position on the string, zero-indexed.
    * @param colour Colour object holding new colours
@@ -113,10 +109,6 @@ class WS2811 {
    * 
    * Call `show()` to actually send the new colour to the led. This method 
    * blocks if and untill the memory to store the colours is available for writing. 
-   * This could not be the case if the data is being passed to the RMT driver. 
-   * This happens when the leds are changed too quickly after calling `show()`. 
-   * Most people will not notice this as these operations usually take at most 
-   * a few microseconds to complete.
    * 
    * @param index position on the string, zero-indexed.
    * @param red red value 0-255.
@@ -137,6 +129,39 @@ class WS2811 {
    * @return Colour struct holding the requested pixel's colour
    */
   Colour getPixel(size_t index) const;
+
+  /**
+   * @brief Set the red colour component of an individual led.
+   * 
+   * Call `show()` to actually send the new colour to the led. This method 
+   * blocks if and until the memory to store the colours is available for writing. 
+   * 
+   * @param index position on the string, zero-indexed.
+   * @param red red component value 0-255
+   */
+  void setRed(size_t index, uint8_t red);
+
+  /**
+   * @brief Set the green colour component of an individual led.
+   * 
+   * Call `show()` to actually send the new colour to the led. This method 
+   * blocks if and until the memory to store the colours is available for writing. 
+   * 
+   * @param index position on the string, zero-indexed.
+   * @param green green component value 0-255
+   */
+  void setGreen(size_t index, uint8_t green);
+
+  /**
+   * @brief Set the blue colour component of an individual led.
+   * 
+   * Call `show()` to actually send the new colour to the led. This method 
+   * blocks if and until the memory to store the colours is available for writing. 
+   * 
+   * @param index position on the string, zero-indexed.
+   * @param blue blue component value 0-255
+   */
+  void setBlue(size_t index, uint8_t blue);
 
   /**
    * @brief Turn off all leds on this string.
