@@ -37,8 +37,10 @@ class Autumn : public WS2811Effect {
   void _cleanup();
 
  private:
-  static const ColourHSV _colours[];
+  // static const ColourHSV _colours[];
+  static const Colour _colours[];
   static const size_t _numberColours;
+  size_t _startLed;
   uint32_t _steps;
   uint32_t _step;
   uint32_t _delay;

@@ -24,6 +24,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Autumn.h"
 
+/*
 const ColourHSV Autumn::_colours[] = {
   {123.0, 100.0, 47.8},  // green
   { 42.0, 100.0, 47.8},  // orange
@@ -31,6 +32,15 @@ const ColourHSV Autumn::_colours[] = {
   {295.0,  96.7, 47.8},  // purple
   { 54.0,  97.5, 47.8},  // yellow
   {178.0,  64.5, 43.1}   // blue
+};
+*/
+const Colour Autumn::_colours[] = {
+  {  0, 122,   6},  // green
+  {122,  85,   0},  // orange
+  {122,   2,   0},  // red
+  {112,   4, 122},  // purple
+  {122, 110,   3},  // yellow
+  { 39, 110, 108}   // blue
 };
 const size_t Autumn::_numberColours = 6;
 
@@ -44,7 +54,7 @@ Autumn::Autumn(uint32_t steps, uint32_t delay) :
 
 void Autumn::_setup() {
   _currentColourIndex = random(_numberColours);
-  _nextColourIndex = random(_numberColours);
+  _nextColourIndex = _currentColourIndex;
   _ledstrip->setAll(_colours[_currentColourIndex]);
   _ledstrip->show();
   _lastMillis = millis();
@@ -54,20 +64,42 @@ void Autumn::_loop() {
   uint32_t currentMillis = millis();
   if (currentMillis - _lastMillis > _delay) {
     _lastMillis = currentMillis;
+    _startLed = random(_ledstrip->numLeds() + 1);
     _step = 0;
     _currentColourIndex = _nextColourIndex;
     _nextColourIndex = random(_numberColours);
   }
-  if (_step > _steps) {
-    delay(1);
+
+  size_t numLeds = _ledstrip->numLeds();
+  if (_step > 4 * _steps) {  // TODO(bertmelis): check for max instead of arbitrary 4x number of steps
+    delay(10);  // arbitrary delay to keep task idle
     return;
   }
 
-  ColourHSV c(_colours[_currentColourIndex].hue + (_step * 1.0 / _steps) * (_colours[_nextColourIndex].hue - _colours[_currentColourIndex].hue),
-              _colours[_currentColourIndex].sat + (_step * 1.0 / _steps) * (_colours[_nextColourIndex].sat - _colours[_currentColourIndex].sat),
-              _colours[_currentColourIndex].val + (_step * 1.0 / _steps) * (_colours[_nextColourIndex].val - _colours[_currentColourIndex].val));
+  // assure safe unsigned to signed int conversion
+  assert(numLeds <= INT_MAX);
+
+  //int32_t maxDist = std::max(std::abs((int32_t)_startLed - 0), std::abs((int32_t)_startLed - (int32_t)numLeds));
+	//int32_t stepSize = _steps / maxDist;
+  int32_t stepSize = _steps / (numLeds / 2);
+
+  for (size_t i = 0; i < numLeds; ++i) {
+    // calculate distance to start
+    int32_t dist = std::abs((int32_t)_startLed - (int32_t)i);
+		int32_t ledStep = _step - stepSize * dist;
+		if (ledStep < 0) ledStep = 0;
+		if (ledStep > _steps) ledStep = _steps;
+    /*
+    ColourHSV c(_colours[_currentColourIndex].hue + (ledStep * 1.0 / _steps) * (_colours[_nextColourIndex].hue - _colours[_currentColourIndex].hue),
+                _colours[_currentColourIndex].sat + (ledStep * 1.0 / _steps) * (_colours[_nextColourIndex].sat - _colours[_currentColourIndex].sat),
+                _colours[_currentColourIndex].val + (ledStep * 1.0 / _steps) * (_colours[_nextColourIndex].val - _colours[_currentColourIndex].val));
+    */
+    Colour c(_colours[_currentColourIndex].red + (ledStep * 1.0 / _steps) * (_colours[_nextColourIndex].red - _colours[_currentColourIndex].red),
+             _colours[_currentColourIndex].green + (ledStep * 1.0 / _steps) * (_colours[_nextColourIndex].green - _colours[_currentColourIndex].green),
+             _colours[_currentColourIndex].blue + (ledStep * 1.0 / _steps) * (_colours[_nextColourIndex].blue - _colours[_currentColourIndex].blue));
+    _ledstrip->setPixel(i, c);
+  }
   ++_step;
-  _ledstrip->setAll(c);
   _ledstrip->show();
   delay(1);
 }
