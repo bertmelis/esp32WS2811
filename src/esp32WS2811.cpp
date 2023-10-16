@@ -211,8 +211,8 @@ void WS2811::_handleRmt(WS2811* ws2811) {
     currentItem = &rmtItems[0];
     if (xSemaphoreTake(ws2811->_smphr, 100) == pdTRUE) {
       for (size_t i = 0; i < ws2811->_numLeds; ++i) {
-        uint32_t currentPixel = ws2811->_leds[i].green << 16 |
-                                ws2811->_leds[i].red << 8 |
+        uint32_t currentPixel = ws2811->_leds[i].red << 16 |
+                                ws2811->_leds[i].green << 8 |
                                 ws2811->_leds[i].blue;
         for (int8_t j = 23; j >= 0; --j) {
           // We have 24 bits of data representing the red, green and blue channels. The value of the
